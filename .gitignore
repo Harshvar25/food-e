@@ -1,0 +1,51 @@
+# Build Artifacts
+target/
+build/
+*.class
+*.jar
+*.war
+*.zip
+*.tar
+*.gz
+HELP.md
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs and Configuration Secrets
+*.log
+logs/
+temp.log
+application-dev.properties
+application-local.yml
+*.key
+
+### IDE/System Files ###
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/nbproject/
+.DS_Store
+Thumbs.db
+
+### VS Code ###
+.vscode/
