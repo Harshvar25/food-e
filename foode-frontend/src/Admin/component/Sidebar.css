@@ -1,0 +1,56 @@
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 100%;
+    flex-grow: 1; /* Pushes the logout button to the bottom */
+}
+
+.nav-link {
+    display: block;
+    padding: 15px 20px;
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #487747;
+}
+
+.sidebar {
+    width: 100%;
+    background-color: #63A361;
+    color: white;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    
+    /* --- ADD THIS LINE --- */
+    max-height: 100vh; 
+    /* This forces the sidebar to be at least as tall as the screen */
+}
+
+/* Keep the rest of your CSS the same */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1; 
+}
+
+.logout-button {
+    margin-top: auto; /* Pushes button to the bottom */
+    padding: 15px 20px;
+    background-color: #5B532C;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+}

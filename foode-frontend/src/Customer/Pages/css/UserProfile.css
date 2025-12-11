@@ -1,0 +1,254 @@
+/* src/Pages/css/UserProfile.css */
+
+.profile-page-container {
+    background-color: #f9f9f9;
+    /* Light gray background */
+    min-height: 100vh;
+}
+
+/* --- 1. Top Banner --- */
+.profile-banner {
+    height: 180px;
+    /* Create the pink/purple gradient effect */
+    background: linear-gradient(180deg, #792c1e 0%, rgb(190, 99, 46) 100%);
+    /* Optional: Add a subtle blur/texture */
+    filter: blur(0px);
+}
+
+/* --- Layout Wrapper --- */
+.profile-content-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    position: relative;
+    top: -60px;
+    /* Overlap the banner */
+}
+
+/* --- 2. Header Section --- */
+.profile-header-section {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.profile-avatar-wrapper {
+    width: 140px;
+    height: 140px;
+    background-color: #fff;
+    border-radius: 50%; 
+    padding: 6px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative; 
+}
+
+/* If using an <img> tag */
+.profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* If using the icon */
+.default-avatar-icon {
+    background-color: #e9ecef;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    padding: 20px;
+}
+
+.profile-info-block {
+    padding-bottom: 10px;
+    flex-grow: 1;
+}
+
+.profile-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+.profile-role {
+    color: #666;
+    margin: 0 0 16px 0;
+}
+
+.profile-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.header-btn {
+
+    padding: 0 24px;       /* Horizontal padding */
+    height: 44px;          /* Fixed height ensures they match perfectly */
+    min-width: 140px;      /* Fixed minimum width ensures they look balanced */
+    
+    border-radius: 22px;   /* Pill shape (half of height) */
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    
+    /* Center text/icons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.primary-btn,
+.header-edit-btn {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+
+    background-color: #222;
+    color: white;
+    border: 2px solid #222;
+}
+
+.primary-btn:hover {
+    background-color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.secondary-btn {
+    background-color: #f1f3f5;
+    color: #333;
+    border: 2px solid #f1f3f5;
+}
+
+.header-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* --- 3. Content Card --- */
+.card-shadow {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.profile-details-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two-column layout */
+    gap: 24px;
+    margin-bottom: 40px;
+}
+.danger-btn-outline {
+    background-color: transparent;
+    color: #dc3545;
+    border: 2px solid #e9ecef; /* Subtle border like the 'Get in Touch' button */
+}
+
+.danger-btn-outline:hover {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+}
+/* Make Address span full width */
+.detail-group:last-child {
+    grid-column: 1 / -1;
+}
+
+.detail-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #777;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    color: #333;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    margin: 0;
+}
+
+.detail-value.read-only {
+    color: #999;
+}
+
+.profile-input,
+.profile-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    background-color: #fdfdfd;
+}
+
+.profile-input:focus,
+.profile-textarea:focus {
+    border-color: #a0a0a0;
+    outline: none;
+    background-color: #fff;
+}
+
+.profile-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* --- Danger Zone --- */
+.danger-zone-card {
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+
+.danger-zone-card h3 {
+    margin-top: 0;
+    color: #d32f2f;
+}
+
+.btn-delete-account {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background-color 0.2s;
+}
+
+.btn-delete-account:hover {
+    background-color: #ffcdd2;
+}
+
+.profile-header-actions {
+    display: flex;
+    gap: 12px; /* Space between buttons */
+    margin-top: 16px;
+}

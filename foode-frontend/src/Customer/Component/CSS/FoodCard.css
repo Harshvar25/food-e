@@ -1,0 +1,219 @@
+ .food-card {
+     background: white;
+     width: 100%;
+     border-radius: 20px;
+     overflow: hidden;
+     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+     transition: 0.3s ease;
+     display: flex;
+     /* Fix layout */
+     flex-direction: column;
+ }
+
+ .food-card:hover {
+     transform: translateY(-5px);
+ }
+
+ .card-image-container {
+     position: relative;
+     height: 200px;
+ }
+
+ .food-image {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+ }
+
+ .best-seller-badge {
+     position: absolute;
+     top: 20px;
+     left: 0;
+     background-color: #d97706;
+     padding: 4px 12px 4px 8px;
+     font-size: 0.75rem;
+     font-weight: 600;
+     display: flex;
+     align-items: center;
+     gap: 4px;
+     color: white;
+     /* Ensure text is white */
+ }
+
+ .card-content {
+     padding: 1.25rem;
+     display: flex;
+     flex-direction: column;
+     flex-grow: 1;
+ }
+
+ .food-title {
+     font-size: 1.25rem;
+     font-weight: 700;
+     margin-top: 0;
+     margin-bottom: 0.5rem;
+ }
+
+ .food-tags {
+     display: flex;
+     gap: 0.5rem;
+     margin-bottom: 1rem;
+ }
+
+ .tag {
+     background-color: #f3f4f6;
+     padding: 4px 10px;
+     border-radius: 20px;
+     font-size: 0.75rem;
+     color: #4b5563;
+     font-weight: 600;
+     text-transform: capitalize;
+ }
+
+ .food-description {
+     margin-bottom: 1.5rem;
+     color: #6b7280;
+     font-size: 0.9rem;
+     line-height: 1.5;
+ }
+
+ .card-footer {
+     margin-top: auto;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     gap: 1rem;
+ }
+
+ .current-price {
+     font-size: 1.5rem;
+     font-weight: 800;
+     color: #1f2937;
+ }
+
+ .original-price {
+     text-decoration: line-through;
+     color: #9ca3af;
+     margin-left: 0.5rem;
+     font-size: 0.9rem;
+ }
+
+ .action-buttons {
+     display: flex;
+     gap: 0.75rem;
+ }
+
+ .wishlist-btn {
+     background: #f3f4f6;
+     border-radius: 12px;
+     width: 40px;
+     height: 40px;
+     border: none;
+     cursor: pointer;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     transition: background 0.2s;
+ }
+
+ .wishlist-btn:hover {
+     background: #e5e7eb;
+ }
+
+ /* --- Animated Button Styles --- */
+
+ /* Variables converted to standard CSS */
+ :root {
+     --btn-green: #1ECD97;
+     --btn-gray: #bbbbbb;
+ }
+
+ .anim-btn-container {
+     display: inline-block;
+     width: 130px;
+     height: 40px;
+     text-align: center;
+ }
+
+ #anim-button {
+     outline: none;
+     height: 40px;
+     text-align: center;
+     width: 130px;
+     border-radius: 40px;
+     background: #fff;
+     border: 2px solid var(--btn-green);
+     color: var(--btn-green);
+     letter-spacing: 1px;
+     text-shadow: 0;
+     font-size: 12px;
+     font-weight: bold;
+     cursor: pointer;
+     transition: all 0.25s ease;
+     position: relative;
+ }
+
+ /* Initial Text */
+ #anim-button:after {
+     content: "ADD TO CART";
+     /* Changed from SUBMIT */
+ }
+
+ /* Hover Effect */
+ #anim-button:hover {
+     color: white;
+     background: var(--btn-green);
+ }
+
+ /* Active Click Effect */
+ #anim-button:active {
+     letter-spacing: 2px;
+ }
+
+ /* --- STATE: LOADING (Spinning) --- */
+ #anim-button.onclic {
+     width: 40px;
+     border-color: var(--btn-gray);
+     border-width: 3px;
+     font-size: 0;
+     border-left-color: var(--btn-green);
+     animation: rotating 0.025s 0.025s linear infinite;
+     background: transparent;
+ }
+
+ #anim-button.onclic:after {
+     content: "";
+ }
+
+ #anim-button.onclic:hover {
+     color: var(--btn-green);
+     background: white;
+ }
+
+ /* --- STATE: VALIDATE (Success Checkmark) --- */
+ #anim-button.validate {
+     font-size: 13px;
+     color: white;
+     background: var(--btn-green);
+     border-color: var(--btn-green);
+     transition: all 0.0025s ease;
+ }
+
+ #anim-button.validate:after {
+     /* Using a unicode checkmark instead of FontAwesome to ensure it works */
+     content: "\2713";
+     font-family: sans-serif;
+     /* Ensure standard font for the unicode check */
+     font-size: 18px;
+ }
+
+ /* Keyframes for spinner */
+ @keyframes rotating {
+     from {
+         transform: rotate(0deg);
+     }
+
+     to {
+         transform: rotate(360deg);
+     }
+ }

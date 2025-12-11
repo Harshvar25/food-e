@@ -1,0 +1,209 @@
+
+.customer-list-page {
+    justify-content: center;
+    width: 80.5vw;
+
+}
+
+.list-title {
+    font-size: 2em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+/* === Overview & Controls Container === */
+.content-overview {
+    display: flex;
+    justify-content: space-between; /* Pushes outer items to the edges */
+    align-items: center;
+    
+    padding: 15px;
+    background-color: #ecf0f1;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+/* === NEW: Grouping Search Input and Button === */
+.search-control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between input and search button */
+}
+
+/* === Search Input Styling (FIXED WIDTH HERE) === */
+.search-input {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    /* 🎯 Increased width for better visual balance */
+    width: 350px; 
+    box-sizing: border-box; 
+    font-size: 0.95rem;
+}
+
+/* === Add Button (Keeping existing styles) === */
+.add-new-button {
+    padding: 10px 15px;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.add-new-button:hover {
+    background-color: #229954;
+}
+
+/* === Table Container (Card) === */
+.table-container {
+    overflow-x: auto; 
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    border: none;
+}
+
+/* === Table Structure === */
+.customer-list-table {
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+.table-header {
+    background-color: #3498db;
+    border-bottom: 1px solid #2980b9;
+}
+
+.table-th {
+    padding: 12px;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: normal;
+    border: 1px solid #2980b9;
+}
+
+.table-body .table-row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table-body .table-row:hover {
+    background-color: #f1f1f1;
+}
+
+.table-td {
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    color: #34495e;
+    border-bottom: 1px solid #ecf0f1;
+    border-right: 1px solid #ecf0f1;
+}
+
+/* === Inline Input Styles for Editing === */
+.inline-input {
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    width: 90%;
+    box-sizing: border-box; 
+}
+
+
+/* === Actions === */
+.actions-cell {
+    display: flex; 
+    gap: 8px; 
+    justify-content: center;
+}
+
+.action-btn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 4px;
+    margin: 0; 
+    transition: all 0.2s ease;
+}
+
+/* Update/Edit Button */
+.update-btn {
+    color: #333;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+.update-btn:hover {
+    background-color: #ddd;
+}
+
+/* Delete Button */
+.delete-btn {
+    color: white;
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Save Button (New - uses green/FoodItems style) */
+.save-button {
+    background-color: #2ecc71;
+    color: white;
+}
+.save-button:hover {
+    background-color: #27ae60;
+}
+
+/* Cancel Button (New - uses grey/FoodItems style) */
+.cancel-button {
+    background-color: #95a5a6;
+    color: white;
+}
+.cancel-button:hover {
+    background-color: #7f8c8d;
+}
+
+
+/* === State Messages === */
+
+.loading-state, .empty-state {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    border-radius: 5px;
+    margin-top: 30px;
+    color: #34495e;
+}
+
+.error-state {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    border-radius: 5px;
+    margin-top: 30px;
+    color: #c0392b;
+    background-color: #fcecec;
+    border: 1px solid #e74c3c;
+    font-weight: 600;
+}
+
+/* Responsive adjustments for table headers */
+@media (max-width: 600px) {
+    .table-th:nth-child(3),
+    .table-th:nth-child(4) {
+        display: none;
+    }
+    .table-td:nth-child(3),
+    .table-td:nth-child(4) {
+        display: none;
+    }
+}

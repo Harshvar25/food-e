@@ -1,0 +1,27 @@
+/* src/Admin/Pages/css/Dashboard.css */
+
+/* 1. Overall Layout - Renamed to avoid conflicts */
+.admin-dashboard-container {
+    display: flex; 
+    flex-direction: row; /* EXPLICITLY set to row */
+    height: 100vh; 
+    width: 100vw;
+    overflow: hidden; /* Prevents double scrollbars */
+}
+
+/* 2. Sidebar Wrapper Styling */
+.admin-sidebar-wrapper {
+    width: 260px; /* Force a fixed width for the sidebar */
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    height: 100%;
+    overflow-y: auto;
+    background-color: #559e62; /* Match your green color */
+}
+
+/* 3. Main Content Styling */
+.admin-main-content {
+    flex-grow: 1; /* Takes up all remaining space */
+    padding: 20px;
+    overflow-y: auto; /* Allows ONLY this part to scroll */
+    background-color: #f4f7f6; 
+}

@@ -1,0 +1,157 @@
+/* src/CSS/Cart.css */
+
+.cart-page-container {
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+.cart-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: none;
+}
+
+.cart-header {
+    background-color: white;
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-header h4 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Table Styling */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table th {
+    background-color: #f9f9f9;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px 20px;
+    text-align: left;
+}
+
+.cart-table td {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+/* Product Column */
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-product-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.product-info h6 {
+    margin: 0;
+    font-size: 1rem;
+    color: #222;
+    font-weight: 600;
+}
+
+.product-info small {
+    color: #888;
+}
+
+/* Quantity Control */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    width: fit-content;
+    overflow: hidden;
+}
+
+.qty-btn {
+    background: #fff;
+    border: none;
+    padding: 5px 12px;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.2s;
+}
+
+.qty-btn:hover:not(:disabled) {
+    background-color: #eee;
+}
+
+.qty-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-weight: 600;
+    outline: none;
+}
+
+/* Buttons */
+.btn-trash {
+    background: white;
+    border: 1px solid #ffcccc;
+    color: #dc3545;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-trash:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.checkout-section {
+    padding: 20px;
+    background-color: #fdfdfd;
+}
+
+.total-label {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.total-amount {
+    font-size: 1.5rem;
+    color: #2ecc71; /* Green color for money */
+    font-weight: 700;
+}
+
+.btn-checkout {
+    background-color: #ff5200; /* Foodyy Theme Color? */
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-checkout:hover {
+    background-color: #e04800;
+}
