@@ -53,13 +53,13 @@ public class CustomerController {
 
     @GetMapping("admin/customers")
     public ResponseEntity<?> getAllCustomers(){
-        List<CustomerInfo> customers = customerService.getAllCustomers();
+        List<CustomerInfo> customerInfos = customerService.getAllCustomers();
 
-        if(customers.isEmpty()){
+        if(customerInfos.isEmpty()){
             return new ResponseEntity<>("No Customer Found.", HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(customerInfos);
     }
 
     @PostMapping("admin/customer/")
@@ -74,7 +74,7 @@ public class CustomerController {
     @PutMapping({"admin/customer/{cusId}", "customer/{cusId}"})
     public ResponseEntity<?> updateCustomer(
             @PathVariable int cusId,
-            @RequestPart CustomerInfo customer,
+            @RequestPart CustomerInfo customerInfo,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
 
         Optional<CustomerInfo> current = customerService.getCustById(cusId);
@@ -82,8 +82,8 @@ public class CustomerController {
         if(current.isEmpty()){
             return new ResponseEntity<>("Customer not found !!",HttpStatus.NOT_FOUND);
         }
-        customer.setCustomerId(cusId);
-        CustomerInfo updated = customerService.addOrUpdateCustomer(customer,imageFile);
+        customerInfo.setCustomerId(cusId);
+        CustomerInfo updated = customerService.addOrUpdateCustomer(customerInfo,imageFile);
         return ResponseEntity.ok(updated);
     }
 
@@ -102,8 +102,8 @@ public class CustomerController {
 
     @GetMapping({"admin/customers/search"})
     public ResponseEntity<List<CustomerInfo>> searchCustomer(@RequestParam String keyword){
-        List<CustomerInfo> customers = customerService.searchCustomer(keyword);
-        return ResponseEntity.ok(customers);
+        List<CustomerInfo> customerInfos = customerService.searchCustomer(keyword);
+        return ResponseEntity.ok(customerInfos);
     }
 
 }

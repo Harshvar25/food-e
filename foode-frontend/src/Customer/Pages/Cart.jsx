@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Navbar from '../Component/Navbar';
 import { CustomerAPI } from '../Services/CustomerAPI';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // <--- 1. IMPORT LINK HERE
 import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import './css/Cart.css'; 
-
 import CheckoutModal from '../Component/CheckoutModal';
 
 const Cart = () => {
@@ -12,13 +11,10 @@ const Cart = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(true);
   const [customerName, setCustomerName] = useState("");
-
-  // 2. Add State for the Modal
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  // --- 1. Fetch Cart Data ---
   const fetchCartData = async () => {
     const id = localStorage.getItem("customerId");
     const token = localStorage.getItem("customer_token");
@@ -64,7 +60,6 @@ const Cart = () => {
         handleRemoveFromCart(item.cartItemId);
         return;
     }
-    
     if (newQuantity < 0) return; 
 
     const id = localStorage.getItem("customerId");
@@ -100,11 +95,8 @@ const Cart = () => {
     }
   };
 
-  // 3. Callback function when order is successfully placed
   const handleOrderSuccess = () => {
-      // Refresh the cart (it should be empty now)
       fetchCartData();
-      // Update the little cart icon number in navbar
       window.dispatchEvent(new Event("cartUpdated"));
   };
 
@@ -117,15 +109,12 @@ const Cart = () => {
 
   return (
     <div className="cart-page-container">
-      {/* Navbar Container */}
       <div style={{ marginBottom: '80px' }}>
          <Navbar />
       </div>
 
       <div className="container" style={{maxWidth: '1000px', margin: '0 auto'}}>
         <div className="cart-card">
-            
-            {/* Header */}
             <div className="cart-header">
                 <h4>Shopping Cart</h4>
             </div>
@@ -162,13 +151,20 @@ const Cart = () => {
                             <tr key={item.cartItemId}>
                               <td>
                                 <div className="product-cell">
-                                  <img
-                                    src={getImageSrc(item.food)}
-                                    alt={item.food.name}
-                                    className="cart-product-img"
-                                  />
+                                  {/* 2. Wrap Image in Link */}
+                                  <Link to={`/food/${item.food.id}`}>
+                                      <img
+                                        src={getImageSrc(item.food)}
+                                        alt={item.food.name}
+                                        className="cart-product-img"
+                                      />
+                                  </Link>
+                                  
                                   <div className="product-info">
-                                    <h6>{item.food.name}</h6>
+                                    {/* 3. Wrap Name in Link with no styles */}
+                                    <Link to={`/food/${item.food.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <h6 style={{ cursor: 'pointer' }}>{item.food.name}</h6>
+                                    </Link>
                                     <small>{item.food.category}</small>
                                   </div>
                                 </div>
@@ -214,7 +210,6 @@ const Cart = () => {
                         </tbody>
                     </table>
 
-                    {/* Footer / Total Section */}
                     <div className="checkout-section">
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
                           <span className="total-label">Grand Total:</span>
@@ -224,7 +219,6 @@ const Cart = () => {
                         <div style={{textAlign: 'right'}}>
                             <button
                                 className="btn-checkout"
-                                // 4. Open the Modal instead of alerting
                                 onClick={() => setIsCheckoutOpen(true)}
                             >
                                 Proceed to Checkout
@@ -237,7 +231,6 @@ const Cart = () => {
         </div>
       </div>
 
-      {/* 5. Add the Modal Component */}
       <CheckoutModal 
           isOpen={isCheckoutOpen} 
           onClose={() => setIsCheckoutOpen(false)} 

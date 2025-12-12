@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepo extends JpaRepository<CustomerOrder, Long> {
-    List<CustomerOrder> findByCustomer_CustomerIdOrderByOrderDateDesc(int custId);
+    List<CustomerOrder> findByCustomerInfo_CustomerIdOrderByOrderDateDesc(int custId);
 
     CustomerOrder findByOrderId(String orderId);
 }

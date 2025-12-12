@@ -27,14 +27,14 @@ public class CartService {
 
 
     public Cart getCartByCustomer(Integer customerId) {
-        CustomerInfo customer = customerRepo.findById(customerId)
+        CustomerInfo customerInfo = customerRepo.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
-        return cartRepo.findByCustomer(customer)
+        return cartRepo.findByCustomerInfo(customerInfo)
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
     }
 
     public Cart addItemToCart(Integer customerId, Integer foodId, Integer quantity) {
-        CustomerInfo customer = customerRepo
+        CustomerInfo customerInfo = customerRepo
                 .findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
 
@@ -42,10 +42,10 @@ public class CartService {
                 .findById(foodId)
                 .orElseThrow(() -> new IllegalArgumentException("Food not found"));
 
-        Cart cart = cartRepo.findByCustomer(customer)
+        Cart cart = cartRepo.findByCustomerInfo(customerInfo)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
-                    newCart.setCustomer(customer);
+                    newCart.setCustomerInfo(customerInfo);
                     return cartRepo.save(newCart);
                 });
         Optional<CartItem> existingItem = cart
@@ -77,7 +77,7 @@ public class CartService {
         CartItem item = cartItem.get();
 
         //we are verifying if this cartItem belongs to the customer or not
-        if(!item.getCart().getCustomer().getCustomerId().equals(customerId)){
+        if(!item.getCart().getCustomerInfo().getCustomerId().equals(customerId)){
             return false;
         }
         item.setQuantity(quantity);
@@ -95,7 +95,7 @@ public class CartService {
 
         CartItem cartItem = cartItemOpt.get();
 
-        if (!cartItem.getCart().getCustomer().getCustomerId().equals(customerId)) {
+        if (!cartItem.getCart().getCustomerInfo().getCustomerId().equals(customerId)) {
             return false;
         }
 

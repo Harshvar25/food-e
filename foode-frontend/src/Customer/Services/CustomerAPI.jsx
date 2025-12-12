@@ -63,7 +63,7 @@ export const CustomerAPI = {
     },
 
     getFoodById: async (id, token) => {
-        return fetch(`http://localhost:8080/customer/foods/${id}`, {
+        return fetch(`http://localhost:8080/customer/food/${id}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });

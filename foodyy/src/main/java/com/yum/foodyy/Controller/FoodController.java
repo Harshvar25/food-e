@@ -37,7 +37,8 @@ public class FoodController {
         }
     }
 
-    @GetMapping({"/admin/food/{foodId}/image", "/customer/food/{foodId}/image"})    public ResponseEntity<byte[]> getImageByFoodId(@PathVariable int foodId){
+    @GetMapping({"/admin/food/{foodId}/image", "/customer/food/{foodId}/image"})
+    public ResponseEntity<byte[]> getImageByFoodId(@PathVariable int foodId){
         Optional<Food> food = foodService.getFoodById(foodId);
         return ResponseEntity.ok(food.get().getImageData());
     }

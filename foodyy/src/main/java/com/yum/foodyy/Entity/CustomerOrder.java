@@ -32,7 +32,7 @@ public class CustomerOrder {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private CustomerInfo customer;
+    private CustomerInfo customerInfo;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<CustomerOrderItems> orderItems;

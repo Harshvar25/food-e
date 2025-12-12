@@ -1,7 +1,5 @@
 package com.yum.foodyy.Entity.DTO;
 
-import com.yum.foodyy.Entity.CustomerInfo;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -85,13 +85,13 @@ public class CustomerService {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtService.generateToken(userDetails.getUsername());
 
-            CustomerInfo customer = customerRepo.findByEmail(loginRequest.getEmail());
+            CustomerInfo customerInfo = customerRepo.findByEmail(loginRequest.getEmail());
 
             LoginResponse loginResponse = new LoginResponse(
                     token,
-                    customer.getCustomerId(),
-                    customer.getName(),
-                    customer.getEmail()
+                    customerInfo.getCustomerId(),
+                    customerInfo.getName(),
+                    customerInfo.getEmail()
             );
 
             System.out.println(token);
@@ -115,28 +115,28 @@ public class CustomerService {
     }
 
     @Transactional
-    public CustomerInfo addOrUpdateCustomer(CustomerInfo customer, MultipartFile imageFile) throws IOException {
+    public CustomerInfo addOrUpdateCustomer(CustomerInfo customerInfo, MultipartFile imageFile) throws IOException {
 
-        boolean isUpdate = Objects.nonNull(customer.getCustomerId()) && customer.getCustomerId() > 0;
+        boolean isUpdate = Objects.nonNull(customerInfo.getCustomerId()) && customerInfo.getCustomerId() > 0;
 
         if (isUpdate) {
-            Optional<CustomerInfo> existingOpt = customerRepo.findById(customer.getCustomerId());
+            Optional<CustomerInfo> existingOpt = customerRepo.findById(customerInfo.getCustomerId());
 
             if (existingOpt.isPresent()) {
                 CustomerInfo existing = existingOpt.get();
 
                 if (imageFile != null && !imageFile.isEmpty()) {
-                    customer.setImageName(imageFile.getOriginalFilename());
-                    customer.setImageType(imageFile.getContentType());
-                    customer.setImageData(imageFile.getBytes());
+                    customerInfo.setImageName(imageFile.getOriginalFilename());
+                    customerInfo.setImageType(imageFile.getContentType());
+                    customerInfo.setImageData(imageFile.getBytes());
                 } else {
-                    customer.setImageName(existing.getImageName());
-                    customer.setImageType(existing.getImageType());
-                    customer.setImageData(existing.getImageData());
+                    customerInfo.setImageName(existing.getImageName());
+                    customerInfo.setImageType(existing.getImageType());
+                    customerInfo.setImageData(existing.getImageData());
                 }
 
-                if (customer.getPassword() == null || customer.getPassword().isEmpty()) {
-                    customer.setPassword(existing.getPassword());
+                if (customerInfo.getPassword() == null || customerInfo.getPassword().isEmpty()) {
+                    customerInfo.setPassword(existing.getPassword());
                 } else {
                     // If it's a new raw password, ensure it's encoded (if not already handled elsewhere)
                     // customer.setPassword(passwordEncoder.encode(customer.getPassword()));
@@ -144,13 +144,13 @@ public class CustomerService {
             }
         } else {
             if (imageFile != null && !imageFile.isEmpty()) {
-                customer.setImageName(imageFile.getOriginalFilename());
-                customer.setImageType(imageFile.getContentType());
-                customer.setImageData(imageFile.getBytes());
+                customerInfo.setImageName(imageFile.getOriginalFilename());
+                customerInfo.setImageType(imageFile.getContentType());
+                customerInfo.setImageData(imageFile.getBytes());
             }
         }
 
-        return customerRepo.save(customer);
+        return customerRepo.save(customerInfo);
     }
 
     public Optional<CustomerInfo> getCustById(int id) {

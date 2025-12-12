@@ -31,11 +31,11 @@ public class OrderService {
     public OrderResponse addOrder(int customerId, OrderRequest orderRequest) {
 
         //getting customer
-        CustomerInfo customer = customerRepo.findById(customerId)
+        CustomerInfo customerInfo = customerRepo.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
 //        getting items from cart of the customer using his ID
-        List<CartItem> cartItems = cartItemRepo.findByCart_Customer_CustomerId(customerId);
+        List<CartItem> cartItems = cartItemRepo.findByCart_CustomerInfo_CustomerId(customerId);
         if (cartItems.isEmpty()) {
             throw new RuntimeException("Cart is empty. Cannot place order.");
         }
@@ -45,8 +45,8 @@ public class OrderService {
         String orderId = "ORD-" + UUID.randomUUID().toString().substring(0,8).toUpperCase();
 
         order.setOrderId(orderId);
-        order.setCustomer(customer);
-        order.setEmail(customer.getEmail());
+        order.setCustomerInfo(customerInfo);
+        order.setEmail(customerInfo.getEmail());
         order.setAddress(orderRequest.address());
         order.setStatus("PLACED");
         order.setOrderDate(LocalDateTime.now());
@@ -94,7 +94,7 @@ public class OrderService {
 //        this is the OrderResponse we will send for the OrderRequest we got
         return new OrderResponse(
                 savedOrder.getOrderId(),
-                savedOrder.getCustomer().getName(),
+                savedOrder.getCustomerInfo().getName(),
                 savedOrder.getEmail(),
                 savedOrder.getAddress(),
                 savedOrder.getStatus(),
@@ -106,7 +106,7 @@ public class OrderService {
 
     public List<OrderResponse> getOrdersByCustomer(int custId) {
         //we are asking for orders with customer id (cust id) from our og table and order them by descending order
-        List<CustomerOrder> customerOrders = orderRepo.findByCustomer_CustomerIdOrderByOrderDateDesc(custId);
+        List<CustomerOrder> customerOrders = orderRepo.findByCustomerInfo_CustomerIdOrderByOrderDateDesc(custId);
 
 //        basically we are using customerOrders to iterate over all the orders of this customer and for
 //        each order we are creating resopnse of their orderItems so that we can add that into our OrderResponse and return it
@@ -120,7 +120,7 @@ public class OrderService {
 
             return new OrderResponse(
                     order.getOrderId(),
-                    order.getCustomer().getName(),
+                    order.getCustomerInfo().getName(),
                     order.getEmail(),
                     order.getAddress(),
                     order.getStatus(),
@@ -158,7 +158,7 @@ public class OrderService {
 
         return  new OrderResponse(
                 customerOrder.getOrderId(),
-                customerOrder.getCustomer().getName(),
+                customerOrder.getCustomerInfo().getName(),
                 customerOrder.getEmail(),
                 customerOrder.getAddress(),
                 customerOrder.getStatus(),

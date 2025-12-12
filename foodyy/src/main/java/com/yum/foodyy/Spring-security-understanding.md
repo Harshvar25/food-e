@@ -50,8 +50,8 @@ Spring Security **requires** a class that implements `UserDetailsService`.
 
 ### Its job:
 
-* Load customer using `email`.
-* Convert customer into **UserDetails object** (CustomerPrincipal).
+* Load customerInfo using `email`.
+* Convert customerInfo into **UserDetails object** (CustomerPrincipal).
 
 ### Flow:
 
@@ -60,8 +60,8 @@ Spring Security **requires** a class that implements `UserDetailsService`.
    ```java
    loadUserByUsername(email)
    ```
-2. It fetches the customer from DB.
-3. It returns `CustomerPrincipal(customer)` — Spring Security compatible object.
+2. It fetches the customerInfo from DB.
+3. It returns `CustomerPrincipal(customerInfo)` — Spring Security compatible object.
 
 ---
 
@@ -82,7 +82,7 @@ Because Spring Security provides the interface — you just create a class that 
 ### Flow:
 
 1. Login request arrives.
-2. Found customer is wrapped inside `CustomerPrincipal`.
+2. Found customerInfo is wrapped inside `CustomerPrincipal`.
 3. Spring now treats this as the authenticated user.
 
 ---
@@ -153,7 +153,7 @@ This is the MOST important part.
 1. User hits API:
 
    ```http
-   POST /customer/signin
+   POST /customerInfo/signin
    ```
 
 2. You check:
@@ -181,7 +181,7 @@ This is the MOST important part.
 
 ## 8. **Detailed Step-by-Step Flow (End-to-End)**
 
-### **1. Client requests login → `/customer/signin`**
+### **1. Client requests login → `/customerInfo/signin`**
 
 ### **2. Controller receives email + password**
 
@@ -257,7 +257,7 @@ com.yum.foodyy
 │   ├── JWTService.java
 │   └── JWTFilter.java
 │
-├── customer
+├── customerInfo
 │   ├── CustomerInfo.java
 │   ├── CustomerRepository.java
 │   ├── CustomerDetailsService.java
@@ -282,8 +282,8 @@ Each component has a clear purpose:
 * **SecurityConfig** → Rules + Filter Setup
 * **JWTService** → Token Creation + Validation
 * **JWTFilter** → Validates Auth On Every Request
-* **CustomerDetailsService** → Fetch customer from DB
-* **CustomerPrincipal** → Wrap customer into UserDetails
+* **CustomerDetailsService** → Fetch customerInfo from DB
+* **CustomerPrincipal** → Wrap customerInfo into UserDetails
 * **Customer Sign-In** → Generates JWT after validating credentials
 
 ---

@@ -23,7 +23,7 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", unique = true)
-    private CustomerInfo customer;
+    private CustomerInfo customerInfo;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

@@ -13,11 +13,11 @@ import java.util.Optional;
 @Repository
 public interface WishlistRepo extends JpaRepository<Wishlist , Integer> {
 
-    boolean existsByCustomerAndFood(CustomerInfo customer, Food food);
+    boolean existsByCustomerInfoAndFood(CustomerInfo customerInfo, Food food);
 
-    Optional<Object> findByCustomerAndFood(CustomerInfo customerInfo, Food food);
+    Optional<Object> findByCustomerInfoAndFood(CustomerInfo customerInfo, Food food);
 
-    List<Wishlist> findByCustomer_CustomerId(Integer customerId);
+    List<Wishlist> findByCustomerInfo_CustomerId(Integer customerId);
 
     @Transactional
     void deleteByFood_Id(int foodId);

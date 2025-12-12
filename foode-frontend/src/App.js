@@ -16,6 +16,7 @@ import UserProfile from "./Customer/Pages/UserProfile";
 import AboutUs from "./Customer/Pages/AboutUs";
 import MyOrders from "./Customer/Pages/MyOrders";
 import AdminOrders from "./Admin/Pages/AdminOrders";
+import FoodDetails from "./Customer/Pages/FoodDetails"; 
 
 // Import the new security component
 import ProtectedRoute from "./ProtectedRoute";
@@ -32,14 +33,11 @@ export default function App() {
                         <ToastContainer position="top-center" />
 
                         <Routes>
-                            {/* --- PUBLIC ROUTES --- */}
                             <Route path="/" element={<Navigate to="/login" replace />} />
                             <Route path="/login" element={<CustomerSignIn />} />
                             <Route path="/signup" element={<CustomerSignUp />} />
                             <Route path="/admin" element={<AdminSignIn />} />
 
-                            {/* --- PROTECTED: CUSTOMER ROUTES --- */}
-                            {/* Only users with 'role' = 'CUSTOMER' can enter here */}
                             <Route element={<ProtectedRoute allowedRole="CUSTOMER" />}>
                                 <Route path="/customerDashboard" element={<CustomerDashboard />} />
                                 <Route path="/wishlist" element={<Wishlist />} />
@@ -47,10 +45,9 @@ export default function App() {
                                 <Route path="/profile" element={<UserProfile />} />
                                 <Route path="/orders" element={<MyOrders />} />
                                 <Route path="/about" element={<AboutUs />} />
+                                <Route path="/food/:id" element={<FoodDetails />} />
                             </Route>
 
-                            {/* --- PROTECTED: ADMIN ROUTES --- */}
-                            {/* Only users with 'role' = 'ADMIN' can enter here */}
                             <Route element={<ProtectedRoute allowedRole="ADMIN" />}>
                                 <Route path="/dashboard" element={<Dashboard />}>
                                     <Route index element={<h2>Welcome to the Dashboard!</h2>} />

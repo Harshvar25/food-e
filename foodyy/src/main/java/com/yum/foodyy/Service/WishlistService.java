@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WishlistService {
@@ -26,17 +25,17 @@ public class WishlistService {
     private WishlistRepo wishlistRepo;
 
     public void addWish(Integer customerID, Integer foodID) {
-        CustomerInfo customer = customerRepo.findById(customerID)
+        CustomerInfo customerInfo = customerRepo.findById(customerID)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         Food food = foodRepo.findById(foodID)
                 .orElseThrow(() -> new IllegalArgumentException("Food not found"));
 
-        if (wishlistRepo.existsByCustomerAndFood(customer, food)) {
+        if (wishlistRepo.existsByCustomerInfoAndFood(customerInfo, food)) {
             return;
         }
 
         Wishlist wishlist  = new Wishlist();
-        wishlist.setCustomer(customer);
+        wishlist.setCustomerInfo(customerInfo);
         wishlist.setFood(food);
         wishlistRepo.save(wishlist);
     }
@@ -45,7 +44,7 @@ public class WishlistService {
         CustomerInfo customerInfo = customerRepo.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
 
-        return wishlistRepo.findByCustomer_CustomerId(customerId);
+        return wishlistRepo.findByCustomerInfo_CustomerId(customerId);
     }
 
     @Transactional
@@ -54,7 +53,7 @@ public class WishlistService {
         Wishlist wishlistItem = wishlistRepo.findById(wishlistId)
                 .orElseThrow(() -> new IllegalArgumentException("Wishlist item not found"));
 
-        Integer customerId = wishlistItem.getCustomer().getCustomerId();
+        Integer customerId = wishlistItem.getCustomerInfo().getCustomerId();
         Integer foodId = wishlistItem.getFood().getId();
         Integer quantity = 1;
 
@@ -68,7 +67,7 @@ public class WishlistService {
         CustomerInfo customerInfo = customerRepo.findById(customerId).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         Food food = foodRepo.findById(foodId).orElseThrow(() -> new IllegalArgumentException("Food not found"));
 
-        Wishlist wishlist = (Wishlist) wishlistRepo.findByCustomerAndFood(customerInfo, food).orElseThrow(() -> new IllegalArgumentException("Wishlist not found"));
+        Wishlist wishlist = (Wishlist) wishlistRepo.findByCustomerInfoAndFood(customerInfo, food).orElseThrow(() -> new IllegalArgumentException("Wishlist not found"));
 
                 if(wishlist != null){
                     wishlistRepo.delete(wishlist);

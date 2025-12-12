@@ -9,14 +9,14 @@ import java.util.Collections;
 
 public class CustomerPrincipal implements UserDetails {
 
-    private final CustomerInfo customer;
+    private final CustomerInfo customerInfo;
 
-    public CustomerPrincipal(CustomerInfo customer) {
-        this.customer = customer;
+    public CustomerPrincipal(CustomerInfo customerInfo) {
+        this.customerInfo = customerInfo;
     }
 
     public CustomerInfo getCustomer() {
-        return customer;
+        return customerInfo;
     }
 
     @Override
@@ -26,12 +26,12 @@ public class CustomerPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return customer.getPassword();
+        return customerInfo.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return customer.getEmail(); // login using email
+        return customerInfo.getEmail(); // login using email
     }
 
     @Override

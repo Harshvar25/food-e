@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Star } from 'lucide-react';
+import { Heart } from 'lucide-react'; // Removed Star if unused
+import { Link } from 'react-router-dom'; // <--- 1. IMPORT THIS
 import './CSS/FoodCard.css';
 import { CustomerAPI } from '../Services/CustomerAPI';
 
 export default function FoodCard({ food, onAddToCart }) {
 
     const [isWishlisted, setIsWishlisted] = useState(false);
-    // State to handle animation classes: '' | 'onclic' | 'validate'
     const [btnState, setBtnState] = useState("");
 
     const imageSrc = food.imageData
@@ -58,11 +58,9 @@ export default function FoodCard({ food, onAddToCart }) {
 
     const animateAddToCart = () => {
         setBtnState("onclic");
-
         if (onAddToCart) {
             onAddToCart(food);
         }
-
         setTimeout(() => {
             setBtnState("validate");
             setTimeout(() => {
@@ -73,8 +71,12 @@ export default function FoodCard({ food, onAddToCart }) {
 
     return (
         <div className="food-card">
+            {/* 2. Wrap Image in Link */}
             <div className="card-image-container">
-                <img src={imageSrc} alt={food.name} className="food-image" />
+                <Link to={`/food/${food.id}`}>
+                    <img src={imageSrc} alt={food.name} className="food-image" />
+                </Link>
+                
                 {food.isBestSeller && (
                     <div className="best-seller-badge">
                         <img src="https://cdn-icons-png.flaticon.com/512/7656/7656139.png" alt="" width="12px" /> Best seller
@@ -83,7 +85,10 @@ export default function FoodCard({ food, onAddToCart }) {
             </div>
 
             <div className="card-content">
-                <h3 className="food-title">{food.name}</h3>
+                {/* 3. Wrap Title in Link (Remove default link styles) */}
+                <Link to={`/food/${food.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h3 className="food-title">{food.name}</h3>
+                </Link>
 
                 <div className="food-tags">
                     {food.category && (
@@ -91,13 +96,18 @@ export default function FoodCard({ food, onAddToCart }) {
                     )}
                 </div>
 
-                <p className="food-description">{food.description}</p>
+                {/* Optional: Limit description length if it's too long */}
+                <p className="food-description">
+                    {food.description?.length > 60 
+                        ? food.description.substring(0, 60) + "..." 
+                        : food.description}
+                </p>
 
                 <div className="card-footer">
                     <div className="price-block">
-                        <span className="current-price">${food.price}</span>
+                        <span className="current-price">₹{food.price}</span>
                         {food.originalPrice && (
-                            <span className="original-price">${food.originalPrice}</span>
+                            <span className="original-price">₹{food.originalPrice}</span>
                         )}
                     </div>
 
@@ -110,7 +120,6 @@ export default function FoodCard({ food, onAddToCart }) {
                             <Heart size={20} fill={isWishlisted ? "red" : "white"} color={isWishlisted ? "red" : "black"} />
                         </button>
 
-                        {/* --- MODIFIED BUTTON --- */}
                         <div className="anim-btn-container">
                             <button
                                 id="anim-button"
