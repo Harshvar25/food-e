@@ -5,7 +5,7 @@ export const CustomerAPI = {
     customerSignUp: async (formData) => {
         return fetch("http://localhost:8080/customer/signup", {
             method: "POST",
-            body: formData, 
+            body: formData,
         });
     },
 
@@ -29,8 +29,8 @@ export const CustomerAPI = {
     updateCustomer: async (id, formData, token) => {
         return fetch(`http://localhost:8080/customer/${id}`, {
             method: "PUT",
-            headers: { 
-                "Authorization": `Bearer ${token}` 
+            headers: {
+                "Authorization": `Bearer ${token}`
             },
             body: formData
         });
@@ -116,7 +116,7 @@ export const CustomerAPI = {
             const response = await axios.get(`http://localhost:8080/cart/${customerId}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
-            return response; 
+            return response;
         } catch (error) { throw error; }
     },
 
@@ -131,7 +131,7 @@ export const CustomerAPI = {
     updateCartQuantity: async (customerId, cartItemId, quantity, token) => {
         try {
             return await axios.put(
-                `http://localhost:8080/cart/update/${customerId}/${cartItemId}`, 
+                `http://localhost:8080/cart/update/${customerId}/${cartItemId}`,
                 { quantity: quantity },
                 { headers: { "Authorization": `Bearer ${token}` } }
             );
@@ -155,17 +155,60 @@ export const CustomerAPI = {
                 'Authorization': `Bearer ${token}`
             },
             // We pass the address inside an object to match the DTO expectation
-            body: JSON.stringify({ address: address }) 
+            body: JSON.stringify({ address: address })
         });
     },
 
     getCustomerOrders: async (customerId, token) => {
-    return fetch(`http://localhost:8080/customer/${customerId}/orders`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    });
-}
+        return fetch(`http://localhost:8080/customer/${customerId}/orders`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+    },
+
+    getAddresses: async (customerId, token) => {
+        return fetch(`http://localhost:8080/customer/${customerId}/address`, {
+            method: "GET",
+            headers: { 
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+    },
+
+    // Add a new address
+    addAddress: async (customerId, addressData, token) => {
+        return fetch(`http://localhost:8080/customer/${customerId}/address`, {
+            method: "POST",
+            headers: { 
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(addressData)
+        });
+    },
+
+    updateAddress: async (customerId, addressData, token) => {
+        return fetch(`http://localhost:8080/customer/${customerId}/profile/address`, {
+            method: "PUT",
+            headers: { 
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(addressData)
+        });
+    },
+
+    // Delete an address (Optional, useful for profile page later)
+    deleteAddress: async (addressId, token) => {
+        return fetch(`http://localhost:8080/customer/address/${addressId}`, { // Matches your controller's @DeleteMapping("/{addressId}")
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+    }
+
+
 };

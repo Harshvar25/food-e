@@ -33,9 +33,6 @@ public class FoodService {
         return foodRepo.findAll();
     }
 
-    // Inside your FoodService class
-
-    // Inside your FoodService class
 
     public Food addOrUpdateFood(Food food, MultipartFile imageFile) throws IOException {
 

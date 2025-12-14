@@ -54,11 +54,7 @@ public class CustomerController {
     @GetMapping("admin/customers")
     public ResponseEntity<?> getAllCustomers(){
         List<CustomerInfo> customerInfos = customerService.getAllCustomers();
-
-        if(customerInfos.isEmpty()){
-            return new ResponseEntity<>("No Customer Found.", HttpStatus.NOT_FOUND);
-        }
-
+        // if no customer is present we will get empty list and it won't trhough any errors
         return ResponseEntity.ok(customerInfos);
     }
 
