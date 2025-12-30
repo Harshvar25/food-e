@@ -1,0 +1,48 @@
+#version: "4.55.0" can skip this line in newer verison of docker
+
+services:
+  frontend:
+    build: ./foode-frontend
+    ports:
+      - "3000:80"  # Access your website at localhost:3000
+    networks:
+      - foode-network
+
+  backend:
+    build: ./foodyy
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/yum
+      - SPRING_DATASOURCE_USERNAME=foode
+      - SPRING_DATASOURCE_PASSWORD=1234
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - foode-network
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: foode
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: yum
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Use a NAMED volume here
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U foode -d yum"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - foode-network
+
+volumes:
+  pgdata:
+
+networks:
+  foode-network:
+    driver: bridge
