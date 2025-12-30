@@ -99,8 +99,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        // VITE/React/Vue default port is often 5173 or 3000
-        config.addAllowedOriginPattern("http://localhost:3000"); // <-- Ensure this is the correct port!
+        config.addAllowedOriginPattern("http://localhost:3000");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("Authorization");
