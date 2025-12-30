@@ -1,0 +1,91 @@
+============================================================
+PROJECT FOODY: DOCKER DEPLOYMENT GUIDE (SPRING BOOT + POSTGRES)
+============================================================
+
+PHASE 1: PREPARING THE APPLICATION
+----------------------------------
+Before Docker can do anything, your Java code must be compiled into a JAR file.
+
+1. Clean and Build the JAR:
+   Command: ./mvnw clean package
+   Function: Deletes old builds and creates a fresh 'FoodE.jar' in the /target folder.
+   *Note: Ensure your 'application.properties' uses 'postgres' as the host for the DB URL.
+
+PHASE 1.5: PREPARING THE FRONTEND
+----------------------------------
+1. Build the Frontend Image:
+   The Dockerfile handles the 'npm install' and 'npm run build' internally 
+   during the 'docker compose up' command. 
+   
+   - Node Stage: Compiles JS/TS into browser-ready files.
+   - Nginx Stage: Acts as a lightweight web server to host those files.
+
+2. Accessing the App:
+   - Backend API: localhost:8080
+   - Frontend UI: localhost:3000
+
+PHASE 2: THE DOCKERFILE (The Recipe)
+------------------------------------
+The Dockerfile tells Docker how to package your app. 
+Create a file named 'Dockerfile' (no extension) in your backend folder:
+
+   FROM eclipse-temurin:17-jdk-alpine
+   COPY target/FoodE.jar FoodE.jar
+   ENTRYPOINT ["java", "-jar", "/FoodE.jar"]
+
+   - FROM: Sets the base "operating system" with Java installed.
+   - COPY: Grabs the JAR you built in Phase 1 and puts it inside the image.
+   - ENTRYPOINT: The command that runs automatically when the container starts.
+
+PHASE 3: DOCKER COMPOSE (The Orchestrator)
+------------------------------------------
+Instead of running commands for the App and Database separately, we use 
+'docker-compose.yml' to run them as a team.
+
+   services:
+     app:
+       build: .               # Tells Docker to use the Dockerfile in this folder
+       ports:
+         - "8090:8080"        # [Local Port]:[Port inside Container]
+       depends_on:
+         - postgres           # Wait for DB to start before starting the App
+       networks:
+         - foode-network
+
+     postgres:
+       image: postgres:latest
+       environment:
+         POSTGRES_USER: foode
+         POSTGRES_PASSWORD: 1234
+         POSTGRES_DB: yum
+       ports:
+         - "5433:5432"        # Access DB on 5433 from your laptop
+       networks:
+         - foode-network
+
+   networks:
+     foode-network:
+       driver: bridge
+
+PHASE 4: RUNNING THE SYSTEM
+---------------------------
+Open your terminal in the folder containing 'docker-compose.yml'.
+
+1. Start everything:
+   Command: docker compose up --build
+   Function: Builds the image and starts both App and Database.
+
+2. Start in Background (Optional):
+   Command: docker compose up -d
+   Function: Runs everything so you can keep using your terminal.
+
+3. Stop everything:
+   Command: docker compose down
+   Function: Shuts down and removes the containers safely.
+
+PHASE 5: USEFUL TROUBLESHOOTING COMMANDS
+----------------------------------------
+- docker ps                : See which containers are currently running.
+- docker logs -f <name>    : See the Spring Boot console output (very important for errors).
+- docker system prune      : Clear out old images/cache to save disk space.
+============================================================
