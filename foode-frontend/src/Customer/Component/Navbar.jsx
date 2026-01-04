@@ -12,8 +12,10 @@ export default function Navbar({ onSearch }) {
     const [customerName, setCustomerName] = useState("Profile");
     const [wishlistCount, setWishlistCount] = useState(0);
     const [cartCount, setCartCount] = useState(0);
+    const [showLogoutModal, setShowLogoutModal] = useState(false); // NEW: State for confirmation
     const { token, logout } = useCustomerAuth();
     const navigate = useNavigate();
+
     const performLogout = async () => {
         try {
             const activeToken = token || localStorage.getItem("customer_token");
@@ -24,6 +26,7 @@ export default function Navbar({ onSearch }) {
         await logout();
         navigate("/login");
     };
+
     useEffect(() => {
         const fetchNavbarData = async () => {
             const id = localStorage.getItem("customerId");
@@ -70,34 +73,71 @@ export default function Navbar({ onSearch }) {
             window.removeEventListener("profileUpdated", handleDataUpdate);
         };
     }, [token, navigate]);
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && onSearch) onSearch(searchTerm);
     };
+
     return (
-        <nav className="navbar">
-            <div className="navbar-logo">
-                <Link to="/customerDashboard"><img src={logoImage} alt="Logo" className="logo-img" /></Link>
-            </div>
-            <div className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </div>
-            <div className={`navbar-actions ${isMenuOpen ? 'active' : ''}`}>
-                <div className="search-container">
-                    <Search size={18} className="search-icon" />
-                    <input type="text" className="search-input" placeholder="Search food..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={handleKeyDown} />
+        <>
+            <nav className="navbar">
+                <div className="navbar-logo">
+                    <Link to="/customerDashboard"><img src={logoImage} alt="Logo" className="logo-img" /></Link>
                 </div>
-                <Link to="/cart" className="nav-item">
-                    <div className="cart-wrapper"><ShoppingCart size={22} /><span className="cart-badge">{cartCount}</span></div>
-                    <span className="nav-text">Cart</span>
-                </Link>
-                <Link to="/wishlist" className="nav-item">
-                    <div className="cart-wrapper"><Heart size={22} /><span className="cart-badge">{wishlistCount}</span></div>
-                    <span className="nav-text">Wishlist</span>
-                </Link>
-                <Link to="/orders" className="nav-item"><User size={22} /><span className="nav-text">My Orders</span></Link>
-                <Link to="/profile" className="nav-item"><User size={22} /><span className="nav-text">{customerName}</span></Link>
-                <button className="nav-item" onClick={performLogout}><LogOut size={22} /><span className="nav-text">Logout</span></button>
-            </div>
-        </nav>
+                <div className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                </div>
+                <div className={`navbar-actions ${isMenuOpen ? 'active' : ''}`}>
+                    <div className="search-container">
+                        <Search size={18} className="search-icon" />
+                        <input type="text" className="search-input" placeholder="Search food..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={handleKeyDown} />
+                    </div>
+                    <Link to="/cart" className="nav-item">
+                        <div className="cart-wrapper"><ShoppingCart size={22} /><span className="cart-badge">{cartCount}</span></div>
+                        <span className="nav-text">Cart</span>
+                    </Link>
+                    <Link to="/wishlist" className="nav-item">
+                        <div className="cart-wrapper"><Heart size={22} /><span className="cart-badge">{wishlistCount}</span></div>
+                        <span className="nav-text">Wishlist</span>
+                    </Link>
+                    <Link to="/orders" className="nav-item"><User size={22} /><span className="nav-text">My Orders</span></Link>
+                    <Link to="/profile" className="nav-item"><User size={22} /><span className="nav-text">{customerName}</span></Link>
+                    <button className="nav-item" onClick={() => setShowLogoutModal(true)}>
+                        <LogOut size={22} />
+                        <span className="nav-text">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            {showLogoutModal && (
+                <div className="modal-overlay">
+                    <div className="addr-modal">
+                        <div className="modal-head">
+                            <h3>Confirm Logout</h3>
+                            <button onClick={() => setShowLogoutModal(false)}><X size={20} /></button>
+                        </div>
+                        <div style={{ padding: '20px 0' }}>
+                            <p>Are you sure you want to log out of Foode?</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                                className="btn-submit" 
+                                style={{ backgroundColor: '#e74c3c' }} 
+                                onClick={performLogout}
+                            >
+                                Yes, Logout
+                            </button>
+                            <button 
+                                className="btn-submit" 
+                                style={{ backgroundColor: '#95a5a6' }} 
+                                onClick={() => setShowLogoutModal(false)}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

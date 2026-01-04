@@ -25,6 +25,7 @@ export default function UserProfile() {
     });
     const [loading, setLoading] = useState(true);
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [showSaveConfirm, setShowSaveConfirm] = useState(false); // NEW: Save confirmation state
     const [currentPassInput, setCurrentPassInput] = useState("");
     const [newPasswordData, setNewPasswordData] = useState({ newPass: '', confirmPass: '' });
 
@@ -92,13 +93,17 @@ export default function UserProfile() {
         }
     };
 
-    const saveProfile = async () => {
-        const storedToken = localStorage.getItem("customer_token");
-
+    const handleSaveClick = () => {
         if (newPasswordData.newPass && newPasswordData.newPass !== newPasswordData.confirmPass) {
             alert("New passwords do not match!");
             return;
         }
+        setShowSaveConfirm(true);
+    };
+
+    const saveProfile = async () => {
+        const storedToken = localStorage.getItem("customer_token");
+        setShowSaveConfirm(false); 
 
         try {
             const formData = new FormData();
@@ -211,7 +216,7 @@ export default function UserProfile() {
                             <div className="action-row">
                                 {isEditingProfile ? (
                                     <>
-                                        <button className="btn-save" onClick={saveProfile}>Save Changes</button>
+                                        <button className="btn-save" onClick={handleSaveClick}>Save Changes</button>
                                         <button className="btn-cancel" onClick={() => setIsEditingProfile(false)}>Cancel</button>
                                     </>
                                 ) : (
@@ -303,6 +308,23 @@ export default function UserProfile() {
                     </div>
                 </div>
             </div>
+
+            {showSaveConfirm && (
+                <div className="modal-overlay">
+                    <div className="addr-modal">
+                        <div className="modal-head">
+                            <h3>Confirm Changes</h3>
+                            <button onClick={() => setShowSaveConfirm(false)}><X size={20} /></button>
+                        </div>
+                        <p style={{ padding: '20px 0' }}>Are you sure you want to save these profile changes?</p>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button className="btn-submit" onClick={saveProfile}>Yes, Save</button>
+                            <button className="btn-submit" style={{ backgroundColor: '#95a5a6' }} onClick={() => setShowSaveConfirm(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showAuthModal && (
                 <div className="modal-overlay">
                     <div className="addr-modal">
