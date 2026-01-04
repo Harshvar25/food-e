@@ -4,7 +4,11 @@ import com.yum.foodyy.Entity.Cart;
 import com.yum.foodyy.Entity.CustomerInfo;
 import com.yum.foodyy.Entity.DTO.LoginRequest;
 import com.yum.foodyy.Entity.DTO.LoginResponse;
+import com.yum.foodyy.Repo.CartRepo;
 import com.yum.foodyy.Repo.CustomerRepo;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,26 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class CustomerService {
 
-    @Autowired
-    private CustomerRepo customerRepo;
-    @Autowired
-    private CartService cartService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private  TokenBlacklistService tokenBlacklistService;
+    @Autowired private CustomerRepo customerRepo;
+    @Autowired private CartRepo cartRepo;
+    @Autowired private CartService cartService;
+    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private JwtService jwtService;
+    @Autowired private AuthenticationManager authenticationManager;
+    @Autowired private  TokenBlacklistService tokenBlacklistService;
 
     public ResponseEntity<?> signUp(CustomerInfo customerInfo, MultipartFile imageFile) throws IOException {
 
@@ -61,6 +58,10 @@ public class CustomerService {
         }
 
         CustomerInfo saved = customerRepo.save(customerInfo);
+        Cart cart = new Cart();
+        cart.setCustomerInfo(saved);
+        cart.setCreatedAt(LocalDateTime.now());
+        cartRepo.save(cart);
 
         // Return DTO (clean & safe)
         Map<String, Object> body = new HashMap<>();
@@ -120,29 +121,29 @@ public class CustomerService {
         boolean isUpdate = Objects.nonNull(customerInfo.getCustomerId()) && customerInfo.getCustomerId() > 0;
 
         if (isUpdate) {
-            Optional<CustomerInfo> existingOpt = customerRepo.findById(customerInfo.getCustomerId());
+            CustomerInfo existing = customerRepo.findById(customerInfo.getCustomerId())
+                    .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-            if (existingOpt.isPresent()) {
-                CustomerInfo existing = existingOpt.get();
-
-                if (imageFile != null && !imageFile.isEmpty()) {
-                    customerInfo.setImageName(imageFile.getOriginalFilename());
-                    customerInfo.setImageType(imageFile.getContentType());
-                    customerInfo.setImageData(imageFile.getBytes());
-                } else {
-                    customerInfo.setImageName(existing.getImageName());
-                    customerInfo.setImageType(existing.getImageType());
-                    customerInfo.setImageData(existing.getImageData());
-                }
-
-                if (customerInfo.getPassword() == null || customerInfo.getPassword().isEmpty()) {
-                    customerInfo.setPassword(existing.getPassword());
-                } else {
-                    // If it's a new raw password, ensure it's encoded (if not already handled elsewhere)
-                    // customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-                }
+            if (imageFile != null && !imageFile.isEmpty()) {
+                customerInfo.setImageName(imageFile.getOriginalFilename());
+                customerInfo.setImageType(imageFile.getContentType());
+                customerInfo.setImageData(imageFile.getBytes());
+            } else {
+                customerInfo.setImageName(existing.getImageName());
+                customerInfo.setImageType(existing.getImageType());
+                customerInfo.setImageData(existing.getImageData());
             }
+
+            if (customerInfo.getPassword() == null || customerInfo.getPassword().isEmpty()) {
+                customerInfo.setPassword(existing.getPassword());
+            } else {
+                customerInfo.setPassword(passwordEncoder.encode(customerInfo.getPassword()));
+            }
+
         } else {
+            if (customerInfo.getPassword() != null) {
+                customerInfo.setPassword(passwordEncoder.encode(customerInfo.getPassword()));
+            }
             if (imageFile != null && !imageFile.isEmpty()) {
                 customerInfo.setImageName(imageFile.getOriginalFilename());
                 customerInfo.setImageType(imageFile.getContentType());
@@ -158,16 +159,19 @@ public class CustomerService {
     }
 
     public void deleteCustomer(int id) {
-        Optional<CustomerInfo> customer = customerRepo.findById(id);
+        CustomerInfo customerInfo = customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        if(customer.isPresent()){
-            Cart cart = cartService.getCartByCustomer(customer.get().getCustomerId());
+        try{
+            Cart cart = cartService.getCartByCustomer(id);
             if(cart != null){
                 cartService.deleteCart(cart.getCartId());
             }
+        } catch (Exception e) {
+            System.out.println("No cart found for this customer");
         }
-        customerRepo.deleteById(id);
-        return;
+
+        customerRepo.delete(customerInfo);
     }
 
     public List<CustomerInfo> searchCustomer(String keyword) {
@@ -196,5 +200,21 @@ public class CustomerService {
             System.out.println("Customer Token Blacklisted");
         }
         return ResponseEntity.ok("Admin logout successful");
+    }
+
+    //verify if current password is correct or not
+    public ResponseEntity<?> checkPassword(int id, Map<String, String> request) {
+        String currentPassword = request.get("currentPassword");
+        CustomerInfo customerInfo = customerRepo.findById(id).orElseThrow();
+
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(customerInfo.getEmail(), currentPassword)
+            );
+
+            return ResponseEntity.ok(Map.of("message", " Authenticated successfully"));
+        }catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Incorrect Password!! Try again."));
+        }
     }
 }

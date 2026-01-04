@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { CustomerAPI } from "../Services/CustomerAPI";
 import './css/CustomerSignIn.css';
-import logoImage from '../asset/logo.png'; // Import the logo image
+import logoImage from '../asset/Logo.png'; // Import the logo image
 
 const useCustomerAuth = () => ({
     login: (token) => { }
 });
 
 export default function CustomerSignIn() {
+
     const navigate = useNavigate();
     const { login } = useCustomerAuth();
 
@@ -18,65 +19,62 @@ export default function CustomerSignIn() {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+        e.preventDefault();
+        setError("");
+        setIsLoading(true);
 
-    // --- FIX STARTS HERE ---
-    // 1. Clear any old/expired tokens BEFORE trying to login. 
-    // This ensures your request is sent as a "guest" without the old invalid header.
-    localStorage.removeItem("customer_token");
-    localStorage.removeItem("customerId");
-    // --- FIX ENDS HERE ---
+        localStorage.removeItem("customer_token");
+        localStorage.removeItem("customerId");
 
-    try {
-        const res = await CustomerAPI.customerSignIn(email, password);
+        try {
+            const res = await CustomerAPI.customerSignIn(email, password);
 
-        if (!res.ok) {
-            let errorMsg = "Invalid credentials";
-            try {
-                const errorData = await res.json();
-                errorMsg = errorData.message || errorData.error || errorMsg;
-            } catch (e) { }
+            if (!res.ok) {
+                let errorMsg = "Invalid credentials";
+                try {
+                    const errorData = await res.json();
+                    errorMsg = errorData.message || errorData.error || errorMsg;
+                } catch (e) { }
 
-            setError(errorMsg);
-            setIsLoading(false);
-            return;
-        }
-
-        const data = await res.json();
-
-        if (data.token) {
-            
-            // 2. Save the NEW token
-            localStorage.setItem("customer_token", data.token); 
-            localStorage.setItem("role", "CUSTOMER"); 
-
-            // 3. Save the Customer ID (Backend sends 'customerId' based on your Java code)
-            const userId = data.id || data.userId || data.customerId;
-
-            if (userId) {
-                localStorage.setItem("customerId", userId);
-                console.log("Login Success! Customer ID saved:", userId);
-            } else {
-                console.error("WARNING: Backend sent token but NO 'id' field.", data);
+                setError(errorMsg);
+                setIsLoading(false);
+                return;
             }
 
-            // 4. Update Context
-            login(data.token);
-            
-            navigate("/customerDashboard");
-        } else {
-            setError("Login succeeded but no token received.");
+            const data = await res.json();
+
+            if (data.token) {
+
+                localStorage.setItem("customer_token", data.token);
+                localStorage.setItem("role", "CUSTOMER");
+
+                const userId = data.id || data.userId || data.customerId;
+
+                if (userId) {
+                    localStorage.setItem("customerId", userId);
+                    await login(data.token);
+                    console.log("Login Success! Customer ID saved:", userId);
+                    setTimeout(() => {
+                        navigate("/customerDashboard");
+                    }, 100);
+                } else {
+                    console.error("WARNING: Backend sent token but NO 'id' field.", data);
+                }
+
+                login(data.token);
+
+                navigate("/customerDashboard");
+            } else {
+                setError("Login succeeded but no token received.");
+                setIsLoading(false);
+            }
+
+        } catch (err) {
+            console.error(err);
+            setError("Could not connect to server.");
             setIsLoading(false);
         }
-
-    } catch (err) {
-        console.error(err);
-        setError("Could not connect to server.");
-        setIsLoading(false);
-    }
-};
+    };
 
     return (
         <div className="signin-page-container">
@@ -85,9 +83,8 @@ export default function CustomerSignIn() {
             </div>
 
             <div className="form-panel">
-                <div className="login-card">
                     <div className="card-head">
-                        <img src={logoImage} alt="Foode Logo" className="logo-img, logo-title" />
+                        <img src={logoImage} alt="Foode Logo" className="logo-img logo-title" />
 
 
                         <div className="card-header">
@@ -133,7 +130,6 @@ export default function CustomerSignIn() {
                         </p>
                     </form>
 
-                </div>
                 <div className="footer-links">
                     <p className="copyright-text">© Foode 2024</p>
                     <a href="/terms">Terms of use</a>

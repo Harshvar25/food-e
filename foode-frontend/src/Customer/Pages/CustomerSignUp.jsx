@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { CustomerAPI } from "../Services/CustomerAPI";
+import logoImage from '../asset/Logo.png';
 
 export default function CustomerSignUp() {
     const navigate = useNavigate();
@@ -10,9 +11,9 @@ export default function CustomerSignUp() {
         email: "",
         phone: "",
         password: ""
-        // Removed 'address' to make signup faster
     });
 
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [imageFile, setImageFile] = useState(null);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -28,9 +29,25 @@ export default function CustomerSignUp() {
         }
     };
 
+    const isPasswordStrong = (pass) => {
+        const regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
+        return regex.test(pass);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+
+        if (formData.password !== confirmPassword) {
+            setError("Passwords do not match!");
+            return;
+        }
+
+        if (!isPasswordStrong(formData.password)) {
+            setError("Password must be 8+ chars with Uppercase, Number, and Special Symbol.");
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -45,7 +62,6 @@ export default function CustomerSignUp() {
             const response = await CustomerAPI.customerSignUp(dataToSend);
 
             if (response.ok) {
-                await response.json();
                 alert("Account Created! Please Login.");
                 navigate("/login");
             } else {
@@ -64,19 +80,15 @@ export default function CustomerSignUp() {
         <div className="signin-page-container">
             <div className="visual-panel"></div>
             <div className="form-panel">
-                <div className="login-card">
-                    <h1 className="logo-title">Foode</h1>
-                    <div className="card-header">
+                    <img src={logoImage} alt="Foode Logo" className="logo-img logo-title" />                    <div className="card-header">
                         <h2>Create Account</h2>
                     </div>
 
                     <form onSubmit={handleSubmit} className="login-form">
-                        
+
                         <label htmlFor="profile-pic">Profile Picture (Optional)</label>
-                        <input 
-                            type="file" 
-                            id="profile-pic" 
-                            accept="image/*"
+                        <input
+                            type="file" id="profile-pic" accept="image/*"
                             onChange={handleFileChange}
                             className="form-input file-input"
                             style={{ paddingTop: '10px' }}
@@ -103,16 +115,22 @@ export default function CustomerSignUp() {
                             className="form-input" required
                         />
 
-                        {/* REMOVED ADDRESS FIELD - Users add it at Checkout */}
-
                         <label htmlFor="password">Password</label>
                         <input
-                            id="password" type="password" placeholder="Strong password"
+                            id="password" type="password" placeholder="Min. 8 chars with symbols"
                             value={formData.password} onChange={handleChange}
                             className="form-input" required
                         />
 
-                        {error && <p className="error-message">{error}</p>}
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input
+                            id="confirmPassword" type="password" placeholder="Repeat your password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="form-input" required
+                        />
+
+                        {error && <p className="error-message" style={{ color: '#d63031', fontSize: '0.85rem', marginBottom: '10px' }}>{error}</p>}
 
                         <button type="submit" className="login-button" disabled={isLoading}>
                             {isLoading ? "Creating Account..." : "Sign Up"}
@@ -124,9 +142,8 @@ export default function CustomerSignUp() {
                     </form>
 
                     <div className="footer-links">
-                        <span className="copyright-text">© Foode 2024</span>
+                        <span className="copyright-text">© Foode 2026</span>
                     </div>
-                </div>
             </div>
         </div>
     );

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API } from "../Services/api";
 import { useAuth } from "../Context/AuthContext";
-import './css/AdminSignIn.css'; 
+import './css/AdminSignIn.css';
+import logo from '../assets/Logo.png';
 
 
 export default function AdminSignIn() {
@@ -28,7 +29,7 @@ export default function AdminSignIn() {
 
             login(data.token);
             localStorage.setItem("token", data.token);
-            localStorage.setItem("role", "ADMIN"); 
+            localStorage.setItem("role", "ADMIN");
             navigate("/dashboard");
 
         } catch (err) {
@@ -45,14 +46,13 @@ export default function AdminSignIn() {
 
             <div className="form-panel">
                 <div className="login-card">
-                    <h1 className="logo-title">Foode</h1> {/* Logo Title */}
-                    
+                    <img src={logo} className="logo-title" alt="foodE Logo" />
                     <div className="card-header">
                         <h2>Log In</h2>
                     </div>
 
                     <form onSubmit={handleSubmit} className="login-form">
-                        
+
                         <label htmlFor="username">Your username</label>
                         <input
                             id="username"
@@ -78,7 +78,7 @@ export default function AdminSignIn() {
                         <button type="submit" className="login-button">
                             Log In
                         </button>
-                        
+
                         <p className="forgot-password">I forgot my password</p>
                     </form>
 

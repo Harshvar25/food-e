@@ -14,12 +14,11 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    // Keep a CONSTANT secret key (do NOT regenerate each time)
     private final String SECRET_KEY =
-            "6A576E5A7234753778214125442A462D4A614E645267556B5870327335763879"; // 64 chars = 256-bit key
+            "6A576E5A7234753778214125442A462D4A614E645267556B5870327335763879";
 
     public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();  // subject = username or email
+        return extractAllClaims(token).getSubject();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
@@ -35,7 +34,7 @@ public class JwtService {
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject) // email/username
+                .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000)) // 30 min
                 .signWith(getKey(), SignatureAlgorithm.HS256)

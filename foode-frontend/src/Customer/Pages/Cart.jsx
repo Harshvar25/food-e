@@ -19,29 +19,27 @@ const Cart = () => {
     const id = localStorage.getItem("customerId");
     const token = localStorage.getItem("customer_token");
 
-    if (!id || !token) {
-        navigate("/login");
-        return;
-    }
+    if (!id || !token) return;
 
     try {
-      setLoading(true);
-      const customerRes = await CustomerAPI.getCustomerById(id, token);
-      if(customerRes.data) setCustomerName(customerRes.data.name);
+        setLoading(true);
+        const response = await CustomerAPI.getCart(id, token);
+        
+        const data = await response.json(); 
+        
+        console.log("Verified Cart Data:", data);
 
-      const response = await CustomerAPI.getCart(id, token);
-      
-      if (response.data && response.data.cartItems) {
-        setCartItems(response.data.cartItems);
-      } else {
-        setCartItems([]);
-      }
+        if (data && data.cartItems && Array.isArray(data.cartItems)) {
+            setCartItems(data.cartItems);
+        } else {
+            setCartItems([]);
+        }
     } catch (error) {
-      console.error("Error fetching cart:", error);
+        console.error("Error fetching cart:", error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   useEffect(() => {
     fetchCartData();

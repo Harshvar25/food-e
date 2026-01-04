@@ -69,16 +69,24 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserDetails userDetails;
 
-            // Detect login type
-            if (username.contains("@")) {
-                userDetails = customerDetailsService.loadUserByUsername(username); // email
-            } else {
-                userDetails = adminDetailsService.loadUserByUsername(username); // username
+            try{
+                if (username.contains("@")) {
+                    userDetails = customerDetailsService.loadUserByUsername(username);
+                } else {
+                    userDetails = adminDetailsService.loadUserByUsername(username);
+                }
+                System.out.println("JwtFilter: User loaded from DB: " + userDetails.getUsername());
+            } catch (Exception e) {
+                System.out.println("JwtFilter: User loading FAILED: " + e.getMessage());
+                filterChain.doFilter(request, response);
+                return;
             }
+
 
             if (jwtService.validateToken(token, userDetails)) {
 //                if the token is genuine, Spring Security needs to create the authentication object and
 //                place it into the SecurityContext, so the rest of the app knows the user is logged in.
+                System.out.println("JwtFilter: Token Validated. Setting Auth.");
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
@@ -91,8 +99,12 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }else{
+                System.out.println("JwtFilter: Token Validation Failed!");
             }
         }
+        }else{
+            System.out.println("JwtFilter: Token is Blacklisted.");
         }
 
         filterChain.doFilter(request, response);

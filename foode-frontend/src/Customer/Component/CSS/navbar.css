@@ -30,7 +30,7 @@
  }
 
  .logo-img {
-    height: 6rem; /* Force image to fit inside the 80px bar */
+    height: 9rem; /* Force image to fit inside the 80px bar */
     width: auto;  /* Keep aspect ratio */
     object-fit: contain;
 }

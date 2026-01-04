@@ -1,0 +1,48 @@
+===========================================================
+FOODYY PROJECT: SECURITY ARCHITECTURE & FLOW DOCUMENTATION
+===========================================================
+
+1. OVERVIEW
+This project uses a Stateless JWT-based Authentication system.
+Security is handled before the request reaches any Controller via
+the Spring Security Filter Chain.
+
+2. THE JWT FILTER FLOW - will repeat for every request
+When a request hits the Backend, JwtFilter performs these steps:
+
+   A. PATH BYPASS:
+      Checks if the URL is /signin or /signup. If yes, it skips
+      the token check to allow the user to authenticate. Because
+      we configured security such that we don't have to go through JwtFilter
+      if it's those paths.
+
+   B. HEADER EXTRACTION:
+      Looks for "Authorization" header. It must start with "Bearer ".
+      If missing, the request is treated as Anonymous.
+
+   C. BLACKLIST CHECK:
+      Validates that the token has not been revoked/blacklisted
+
+   D. USER IDENTIFICATION & VALIDATION:
+      - Extracts username/email from the JWT.
+      - Decides whether to use AdminDetailsService or CustomerDetailsService
+        based on the username format (e.g., presence of '@').
+      - Validates the token against the database record and expiration date.
+
+   E. SECURITY CONTEXT INJECTION:
+      If valid, a 'UsernamePasswordAuthenticationToken' is created.
+      This authentication object is placed into the 'SecurityContextHolder'.
+      This is what tells Spring Boot: "This request is AUTHENTICATED."
+
+3. CORE COMPONENTS
+- SecurityConfig: Defines which URLs are locked/unlocked.
+- JwtFilter: The filter through which every request passes.
+- JwtService: Basically a service class which creates token, retrieve details from that token
+and perform other token related functions.
+- AuthenticationManager: Used only during the INITIAL sign-in process.
+
+4. STATELESSNESS NOTE
+Because we use 'SessionCreationPolicy.STATELESS', the server does
+NOT remember users. The token must be sent in the header of
+EVERY protected request.
+===========================================================

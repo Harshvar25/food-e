@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../Component/Navbar'; // Adjust path if needed
-import FoodCard from '../Component/FoodCard'; // Adjust path if needed
+import Navbar from '../Component/Navbar';
+import FoodCard from '../Component/FoodCard';
 import { CustomerAPI } from '../Services/CustomerAPI';
 import { useNavigate } from 'react-router-dom';
-import './css/CustomerDashboard.css'; // Reusing dashboard CSS for grid layout
+import './css/CustomerDashboard.css';
 
 export default function Wishlist() {
     const [wishlistItems, setWishlistItems] = useState([]);
-    const [customerName, setCustomerName] = useState(""); // State for Name
+    const [customerName, setCustomerName] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem("customer_token") || "");
+    const [token] = useState(localStorage.getItem("customer_token") || "");
 
     const navigate = useNavigate();
 
@@ -25,16 +25,16 @@ export default function Wishlist() {
         try {
             setLoading(true);
 
-            // 1. Fetch Name
-            const customerRes = await CustomerAPI.getCustomerById(id, token);
-            if (customerRes.data && customerRes.data.name) {
-                setCustomerName(customerRes.data.name.split(' ')[0]);
+            const customerResponse = await CustomerAPI.getCustomerById(id, token);
+            const customerData = await customerResponse.json();
+            if (customerData && customerData.name) {
+                setCustomerName(customerData.name.split(' ')[0]);
             }
 
-            // 2. Fetch Wishlist
-            const wishlistRes = await CustomerAPI.getWishlist(id, token);
-            if (wishlistRes.data) {
-                setWishlistItems(wishlistRes.data);
+            const wishlistResponse = await CustomerAPI.getWishlist(id, token);
+            const wishlistData = await wishlistResponse.json();
+            if (wishlistData) {
+                setWishlistItems(wishlistData);
             }
             setError(null);
 
@@ -49,7 +49,6 @@ export default function Wishlist() {
     useEffect(() => {
         fetchData();
 
-        // Listener to refresh if an item is removed via the card
         const handleWishlistUpdate = () => fetchData();
         window.addEventListener("wishlistUpdated", handleWishlistUpdate);
 
@@ -57,9 +56,14 @@ export default function Wishlist() {
     }, [navigate]);
 
     const handleMoveToCart = async (wishlistId) => {
-        await CustomerAPI.moveToCart(wishlistId, token);
-
-        setWishlistItems(prev => prev.filter(item => item.id !== wishlistId));
+        try {
+            const response = await CustomerAPI.moveToCart(wishlistId, token);
+            if (response.ok) {
+                setWishlistItems(prev => prev.filter(item => item.id !== wishlistId));
+            }
+        } catch (error) {
+            console.error("Error moving item to cart:", error);
+        }
     };
 
     return (
@@ -73,7 +77,6 @@ export default function Wishlist() {
                 {loading && <p className="status-msg">Loading...</p>}
                 {error && <p className="status-msg error">{error}</p>}
 
-                {/* --- CASE 1: EMPTY STATE (Specific UI) --- */}
                 {!loading && !error && wishlistItems.length === 0 && (
                     <div className="empty-state-container" style={{
                         textAlign: 'center',
@@ -83,7 +86,6 @@ export default function Wishlist() {
                         alignItems: 'center',
                         gap: '15px'
                     }}>
-                        {/* We use inline styles here to keep it simple, or you can add to CSS */}
                         <h2 style={{ fontSize: '2rem', color: '#333' }}>
                             Hey {customerName},
                         </h2>

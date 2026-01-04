@@ -2,11 +2,15 @@ package com.yum.foodyy.Controller;
 
 import com.yum.foodyy.Entity.CustomerInfo;
 import com.yum.foodyy.Entity.DTO.LoginRequest;
+import com.yum.foodyy.Entity.DTO.PasswordChangeReq;
 import com.yum.foodyy.Service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +28,19 @@ public class CustomerController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @PostMapping("/customer/signup")
-    public ResponseEntity<?> customerSignUp(@RequestPart("customer") CustomerInfo customerInfo, @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
+    public ResponseEntity<?> customerSignUp(
+            @Valid @RequestPart("customer") CustomerInfo customerInfo,
+            BindingResult bindingResult,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
+
         return customerService.signUp(customerInfo, imageFile);
     }
 
@@ -81,6 +96,14 @@ public class CustomerController {
         customerInfo.setCustomerId(cusId);
         CustomerInfo updated = customerService.addOrUpdateCustomer(customerInfo,imageFile);
         return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping("customer/{id}/verify-password")
+    public ResponseEntity<?> verifyPassword(
+            @PathVariable int id,
+            @RequestBody Map<String, String> request
+    ){
+        return customerService.checkPassword(id, request);
     }
 
     @DeleteMapping({"admin/customer/{id}" , "customer/{id}"})

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CustomerAPI } from '../Services/CustomerAPI';
-
-// MUI Imports (Same as Admin Card)
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
@@ -11,8 +9,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box'; 
 import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
-
-// Icons
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -20,7 +16,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export default function FoodCard({ food, onAddToCart }) {
-
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [loadingCart, setLoadingCart] = useState(false);
 
@@ -30,7 +25,6 @@ export default function FoodCard({ food, onAddToCart }) {
 
     const priceDisplay = `₹${food.price ? food.price.toFixed(2) : '0.00'}`;
 
-    // --- 1. LOGIC: Wishlist Check ---
     useEffect(() => {
         const checkWishlistStatus = async () => {
             const customerId = localStorage.getItem("customerId");
@@ -39,8 +33,13 @@ export default function FoodCard({ food, onAddToCart }) {
             if (customerId && token) {
                 try {
                     const response = await CustomerAPI.getWishlist(customerId, token);
-                    if (response.data) {
-                        const exists = response.data.some(item => item.food.id === food.id);
+                    const data = await response.json();
+                    
+                    if (data && Array.isArray(data)) {
+                        const exists = data.some(item => {
+                            const idToCompare = item.food ? item.food.id : item.id;
+                            return idToCompare === food.id;
+                        });
                         setIsWishlisted(exists);
                     }
                 } catch (error) {
@@ -51,9 +50,8 @@ export default function FoodCard({ food, onAddToCart }) {
         checkWishlistStatus();
     }, [food.id]);
 
-    // --- 2. LOGIC: Handle Wishlist Click ---
     const handleWishlistClick = async (e) => {
-        e.preventDefault(); // Prevent navigating to details page
+        e.preventDefault(); 
         e.stopPropagation();
 
         const token = localStorage.getItem("customer_token");
@@ -78,7 +76,6 @@ export default function FoodCard({ food, onAddToCart }) {
         }
     };
 
-    // --- 3. LOGIC: Add to Cart ---
     const handleAddToCartClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -87,11 +84,9 @@ export default function FoodCard({ food, onAddToCart }) {
         if (onAddToCart) {
             onAddToCart(food);
         }
-        // Simulate a small delay for visual feedback
         setTimeout(() => setLoadingCart(false), 500);
     };
 
-    // Helper for Veg/Non-Veg Icon
     const VegIcon = () => (
         <Box sx={{ border: '2px solid #2ecc71', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2px', marginRight: '8px', minWidth: '20px' }}>
             <Box sx={{ backgroundColor: '#2ecc71', width: '10px', height: '10px', borderRadius: '50%' }} />
@@ -123,7 +118,6 @@ export default function FoodCard({ food, onAddToCart }) {
               }
           }}
       >
-          {/* 1. Image Section (Wrapped in Link for Navigation) */}
           <Box sx={{ position: 'relative', height: '200px' }}>
               <Link to={`/food/${food.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <CardMedia
@@ -134,8 +128,6 @@ export default function FoodCard({ food, onAddToCart }) {
                       sx={{ objectFit: 'cover' }}
                   />
               </Link>
-
-              {/* Category Badge Overlay */}
               <Chip 
                 label={food.category} 
                 size="small" 
@@ -144,8 +136,6 @@ export default function FoodCard({ food, onAddToCart }) {
                     backgroundColor: 'rgba(255,255,255,0.9)', fontWeight: 700, color: '#333', backdropFilter: 'blur(4px)'
                 }} 
               />
-
-              {/* Best Seller Badge */}
               {food.isBestSeller && (
                   <Chip 
                     label="Best Seller" 
@@ -158,13 +148,9 @@ export default function FoodCard({ food, onAddToCart }) {
               )}
           </Box>
 
-          {/* 2. Content Body */}
           <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', pt: 2, pb: 1 }}>
-              
-              {/* Title Row with Veg/Non-Veg Icon */}
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
                   {food.isVeg ? <VegIcon /> : <NonVegIcon />}
-                  
                   <Link to={`/food/${food.id}`} style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
                       <Typography variant="h6" component="div" sx={{ fontWeight: 700, lineHeight: 1.2, color: '#2d3436', '&:hover': { color: '#2e7d32' } }}>
                           {food.name}
@@ -172,7 +158,6 @@ export default function FoodCard({ food, onAddToCart }) {
                   </Link>
               </Box>
 
-              {/* Description */}
               <Typography variant="body2" color="text.secondary" sx={{ 
                   mb: 2, 
                   display: '-webkit-box', overflow: 'hidden',
@@ -182,7 +167,6 @@ export default function FoodCard({ food, onAddToCart }) {
                   {food.description || "No description available."}
               </Typography>
 
-              {/* Meta Data Row (Prep Time & Spiciness) */}
               <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#f5f6fa', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', color: '#636e72', fontWeight: 600 }}>
                       <AccessTimeIcon sx={{ fontSize: '1rem', mr: 0.5 }} />
@@ -194,10 +178,8 @@ export default function FoodCard({ food, onAddToCart }) {
                   </Box>
               </Box>
 
-              {/* Spacer to push footer to bottom */}
               <Box sx={{ flexGrow: 1 }} />
 
-              {/* 3. Footer: Price & Actions */}
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px dashed #dfe6e9', pt: 2 }}>
                   <Box>
                       <Typography variant="h6" sx={{ color: '#2d3436', fontWeight: 800 }}>
@@ -211,7 +193,6 @@ export default function FoodCard({ food, onAddToCart }) {
                   </Box>
 
                   <Box display="flex" gap={1}>
-                      {/* Wishlist Button */}
                       <IconButton 
                         size="small" 
                         onClick={handleWishlistClick}
@@ -224,7 +205,6 @@ export default function FoodCard({ food, onAddToCart }) {
                           {isWishlisted ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
                       </IconButton>
 
-                      {/* Add to Cart Button */}
                       <Button
                         variant="contained"
                         size="small"
@@ -244,7 +224,6 @@ export default function FoodCard({ food, onAddToCart }) {
                       </Button>
                   </Box>
               </Box>
-
           </CardContent>
       </Card>
     );

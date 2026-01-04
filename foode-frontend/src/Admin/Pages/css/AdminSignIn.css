@@ -1,9 +1,4 @@
-/*
- * AdminSignIn.css
- * Styles to replicate the crystal-themed login page design.
- */
 
-/* === 1. Layout and Background === */
 
 .signin-page-container {
     display: flex;
@@ -51,15 +46,18 @@
 
 
 .login-card {
+    display: flex;
+    flex-direction: column;    /* Stacks elements vertically */
+    align-items: center;       /* Centers items horizontally */
+    text-align: center;       
     background: white;
     padding: 2.5rem 3rem;
-    border-radius: 1.5rem; /* Rounded corners */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 10px rgba(0, 0, 0, 0.05); /* Soft, prominent shadow */
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 10px rgba(0, 0, 0, 0.05);
     width: 100%;
     max-width: 420px;
     z-index: 1; 
 }
-
 .logo-title {
     font-size: 2.5rem;
     font-weight: 800; /* Extra bold */

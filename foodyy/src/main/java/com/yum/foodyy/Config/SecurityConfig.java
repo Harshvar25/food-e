@@ -7,11 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -35,19 +35,13 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-
-    // Password encoder for both Admin + Customer
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(
-            AdminDetailsService adminDetailsService,
-            CustomerDetailsService customerDetailsService
-    ) {
+    public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider adminProvider = new DaoAuthenticationProvider();
         adminProvider.setUserDetailsService(adminDetailsService);
         adminProvider.setPasswordEncoder(passwordEncoder());
@@ -56,61 +50,48 @@ public class SecurityConfig {
         customerProvider.setUserDetailsService(customerDetailsService);
         customerProvider.setPasswordEncoder(passwordEncoder());
 
-        // Order matters!
         return new ProviderManager(customerProvider, adminProvider);
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
                         .requestMatchers(
                                 "/admin/signin",
-                                "admin/signout",
                                 "/customer/signin",
-                                "/customer/signup"
+                                "/customer/signup",
+                                "/public/**",
+                                "/images/**"
                         ).permitAll()
 
-                        // logout needs the token → protected
-                        .requestMatchers("/admin/signout").authenticated()
-
+                        .requestMatchers("/customer/**", "/api/customer/**", "/cart/**", "/wishlist/**")
+                        .hasRole("CUSTOMER")
+                        .requestMatchers("/admin/**", "/api/admin/**")
+                        .hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
                 .httpBasic(Customizer.withDefaults())
-
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("http://localhost:3000");
+        config.setAllowedOriginPatterns(List.of("http://localhost:3000", "http://localhost:5173"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("Authorization");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-
         return source;
     }
-
-
-
-
 }
