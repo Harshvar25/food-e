@@ -44,7 +44,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (
                 path.equals("/admin/signin") ||
                 path.equals("/customer/signin") ||
-                path.equals("/customer/signup")) {
+                path.equals("/customer/signup") ||
+                path.startsWith(("/forgot-password/"))) {
 
             filterChain.doFilter(request, response);
             return;

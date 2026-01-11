@@ -72,6 +72,10 @@ public class CustomerInfo {
     @JsonIgnore
     private List<CustomerOrder> orders;
 
+    @OneToOne(mappedBy = "customerInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private ForgotPassword forgotPassword;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

@@ -206,5 +206,25 @@ export const CustomerAPI = {
             method: "DELETE",
             headers: { "Authorization": `Bearer ${token}` }
         });
+    },
+
+    verifyEmailForOTP: async (email) => {
+        return fetch(`${BASE_URL}/forgot-password/verify-email/${email}`, {
+            method: "POST"
+        });
+    },
+
+    verifyOTP: async (otp, email) => {
+        return fetch(`${BASE_URL}/forgot-password/verify-otp/${otp}/${email}`, {
+            method: "POST"
+        });
+    },
+
+    resetPassword: async (email, newPassword) => {
+        return fetch(`${BASE_URL}/forgot-password/change-password/${email}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password: newPassword }),
+        });
     }
 };

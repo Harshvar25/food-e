@@ -66,7 +66,8 @@ public class SecurityConfig {
                                 "/customer/signin",
                                 "/customer/signup",
                                 "/public/**",
-                                "/images/**"
+                                "/images/**",
+                                "/forgot-password/**"
                         ).permitAll()
 
                         .requestMatchers("/customer/**", "/api/customer/**", "/cart/**", "/wishlist/**")

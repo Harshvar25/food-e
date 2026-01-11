@@ -217,4 +217,9 @@ public class CustomerService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Incorrect Password!! Try again."));
         }
     }
+
+    public void updatePassword(CustomerInfo customer, String newPass) {
+        customer.setPassword(passwordEncoder.encode(newPass));
+        customerRepo.save(customer);
+    }
 }
