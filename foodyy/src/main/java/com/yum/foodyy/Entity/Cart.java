@@ -1,5 +1,6 @@
 package com.yum.foodyy.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", unique = true)
+    @JsonIgnore
     private CustomerInfo customerInfo;
 
     @Column(name = "created_at", updatable = false)

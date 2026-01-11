@@ -1,12 +1,17 @@
 package com.yum.foodyy.Controller;
 
 import com.yum.foodyy.Entity.Cart;
+import com.yum.foodyy.Entity.CustomerInfo;
 import com.yum.foodyy.Service.CartService;
+import com.yum.foodyy.Service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,13 +22,21 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+    @Autowired private CustomerService customerService;
 
     @GetMapping("/{custId}")
     public ResponseEntity<?> getCart(@PathVariable Integer custId){
         Cart cart = cartService.getCartByCustomer(custId);
 
         if(cart == null){
-            return ResponseEntity.ok(Map.of("cartItems", List.of()));
+            Cart emptyCart = new Cart();
+            CustomerInfo customerInfo = customerService.getCustById(custId)
+                    .orElseThrow(() -> new UsernameNotFoundException("No such user exist"));
+
+            emptyCart.setCartItems(new ArrayList<>());
+            emptyCart.setCreatedAt(LocalDateTime.now());
+            emptyCart.setCustomerInfo(customerInfo);
+            return ResponseEntity.ok(emptyCart);
         }
 
         return ResponseEntity.ok(cart);
